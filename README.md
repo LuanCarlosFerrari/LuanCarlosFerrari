@@ -1,4 +1,4 @@
-# 💫 About Me:
+# Apresentação:
 Sou desenvolvedor .NET experiente em administração de infraestrutura e suporte a usuários, cursando Engenharia de Computação com ênfase em análise de dados pela Univesp e com formação em História com ênfase em Filosofia pela Unesp.
 
 
