@@ -1,4 +1,5 @@
 <div align="center">
+  
 # Introduction:
 I am an experienced .NET developer in infrastructure administration and user support, currently studying Computer Engineering with a focus on data analysis at Univesp and with a degree in History with a focus on Philosophy from Unesp.
 
