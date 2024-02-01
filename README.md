@@ -25,7 +25,6 @@ I am an experienced .NET developer in infrastructure administration and user sup
   <img align="center" alt="RabbitMQ" height="30" width="40" src="https://www.svgrepo.com/show/354250/rabbitmq-icon.svg")>
   <img align="center" alt="PostgreSQL" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg">
   <img align="center" alt="MySQL" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg">
-  <img align="center" alt="Azure DevOps" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg">
   <img align="center" alt="Postman" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg">
 </div>
 
