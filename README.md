@@ -38,6 +38,4 @@ I am an experienced .NET developer in infrastructure administration and user sup
 ### ✍️ Dev Quote
 ![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
-[![](https://learn.microsoft.com/pt-br/users/me/achievements#trophies-section)
-
 </div>
