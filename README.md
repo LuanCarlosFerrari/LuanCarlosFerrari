@@ -31,7 +31,7 @@ I am an experienced .NET developer in infrastructure administration and user sup
 
 # 📊 GitHub Stats:
 
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=LuanCarlosFerrari&theme=prussian&hide_border=true&include_all_commits=true&count_private=true&layout=compact)
+![](https://github-readme-stats.vercel.app/api/top-langs/?username=LuanCarlosFerrari&theme=prussian&hide_border=true&include_all_commits=true&count_private=true&layout=compact_icons=true)
 
 ![](https://github-readme-streak-stats.herokuapp.com/?user=LuanCarlosFerrari&theme=prussian&hide_border=true)
 
