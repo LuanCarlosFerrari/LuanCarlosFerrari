@@ -68,8 +68,6 @@
 
 ## 📊 GitHub Stats
 
-<img src="https://github-readme-stats.vercel.app/api?username=LuanCarlosFerrari&show_icons=true&theme=react&rank_icon=github" />
-
 <div align="center">
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=LuanCarlosFerrari&theme=prussian&hide_border=true&include_all_commits=true&count_private=true&layout=compact" />
 </div>
