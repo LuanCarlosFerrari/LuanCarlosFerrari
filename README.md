@@ -12,14 +12,17 @@
 
 ---
 
+<div align="center">
+
 ## 🌐 Connect with Me
 
-<p align="center">
-  <a href="https://www.instagram.com/the.ferrant/"><img src="https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white" /></a>
-  <a href="https://www.linkedin.com/in/lu%C3%A3-ferrari/"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white" /></a>
-</p>
+<a href="https://www.instagram.com/the.ferrant/"><img src="https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white" /></a> <a href="https://www.linkedin.com/in/lu%C3%A3-ferrari/"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white" /></a>
+
+</div>
 
 ---
+
+<div align="center">
 
 ## 💻 Tech Stack
 
@@ -57,6 +60,8 @@
 ![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=flat\&logo=visual-studio-code\&logoColor=white)
 ![Markdown](https://img.shields.io/badge/Markdown-000000?style=flat\&logo=markdown\&logoColor=white)
 
+</div>
+
 ---
 
 ## 📊 GitHub Stats
@@ -68,11 +73,12 @@
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=LuanCarlosFerrari&theme=prussian&hide_border=true" />
 </div>
 
-
 ---
+
+<div align="center">
 
 ## ✍️ Developer Quote
 
-<p align="center">
-  <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical" />
-</p>
+<img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical" />
+
+</div>
