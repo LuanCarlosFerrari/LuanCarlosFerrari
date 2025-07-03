@@ -72,7 +72,7 @@
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=LuanCarlosFerrari&theme=prussian&hide_border=true&include_all_commits=true&count_private=true&layout=compact" />
 </div>
 <div align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=LuanCarlosFerrari&theme=prussian&hide_border=true" />
+  <img src="https://streak-stats.demolab.com?user=LuanCarlosFerrari&theme=prussian&hide_border=true" />
 </div>
 
 ---
