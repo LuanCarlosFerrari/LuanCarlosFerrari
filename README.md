@@ -6,8 +6,8 @@
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=LuanCarlosFerrari&style=social" alt="Profile Views" />
-  <img src="https://img.shields.io/github/followers/LuanCarlosFerrari?style=social" alt="Followers" />
+  <img src="https://komarev.com/ghpvc/?username=LuanCarlosFerrari&style=for-the-badge" alt="Profile Views" />
+  <img src="https://img.shields.io/github/followers/LuanCarlosFerrari?style=for-the-badge" alt="Followers" />
 </p>
 
 ---
