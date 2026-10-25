@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import subprocess
+import sys
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -19,9 +21,18 @@ def test_launcher_and_icon_are_shipped() -> None:
 def test_env_paths() -> None:
     env = shortcut_env(start_menu=True, remove=False)
     assert env["AA_FOLDERS"] == "Desktop;Programs"
-    assert env["AA_LAUNCHER"].endswith("iniciar.cmd")
+    assert env["AA_ARGS"].endswith('iniciar.cmd"')
     assert env["AA_ICON"].endswith("icone.ico")
     assert shortcut_env(start_menu=False, remove=True)["AA_FOLDERS"] == "Desktop"
+
+
+def test_frozen_exe_points_to_itself(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    exe = tmp_path / "AssistenteArena.exe"
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(sys, "executable", str(exe))
+    env = shortcut_env(start_menu=False, remove=False)
+    assert env["AA_TARGET"] == env["AA_ICON"] == str(exe.resolve())
+    assert env["AA_ARGS"] == "" and env["AA_DIR"] == str(tmp_path.resolve())
 
 
 def test_runs_powershell_with_env() -> None:

@@ -35,6 +35,7 @@ class Settings:
     orcamento_mensal_brl: float = 20.0
     cotacao_dolar_manual: float = 5.50
     formato_padrao: str = "Histórico"
+    atalho_oferecido: bool = False
 
     @classmethod
     def load(cls) -> Settings:

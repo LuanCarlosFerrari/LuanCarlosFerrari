@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import getpass
 import json
 import sys
@@ -259,9 +260,52 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _ask_yes(question: str) -> bool:
+    answer = input(f"{question} [S/n] ").strip().lower()
+    return answer in ("", "s", "sim", "y", "yes")
+
+
+def cmd_iniciar() -> int:
+    """Dois cliques no ícone/executável: configura o que falta e começa a observar."""
+    print("Assistente Arena — análise de tela fora das partidas\n")
+    settings = Settings.load()
+
+    if not get_api_key():
+        print("Primeiro uso: falta a chave da API da Anthropic (crie em console.anthropic.com).")
+        if cmd_chave(argparse.Namespace(remover=False)) != 0:
+            return 2
+        print()
+
+    if sys.platform == "win32" and not settings.atalho_oferecido:
+        settings.atalho_oferecido = True
+        settings.save()
+        if _ask_yes("Criar um atalho com ícone na área de trabalho?"):
+            cmd_atalho(argparse.Namespace(remover=False, so_area_de_trabalho=False))
+        print()
+
+    cmd_status(argparse.Namespace(log=None))
+    print()
+    return cmd_observar(
+        argparse.Namespace(formato=None, log=None, exportar=True, json=None, atalho="ctrl+shift+a")
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    args = build_parser().parse_args(argv)
+    args_list = sys.argv[1:] if argv is None else argv
+    if not args_list:
+        # Aberto por dois cliques: a janela não pode sumir antes de você ler.
+        try:
+            return cmd_iniciar()
+        except KeyboardInterrupt:
+            return 0
+        except Exception as e:
+            print(f"\n✖ Erro inesperado: {e}")
+            return 1
+        finally:
+            with contextlib.suppress(EOFError, KeyboardInterrupt):
+                input("\nPressione Enter para fechar...")
+    args = build_parser().parse_args(args_list)
     result: int = args.func(args)
     return result
