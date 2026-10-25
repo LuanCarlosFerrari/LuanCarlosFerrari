@@ -26,8 +26,16 @@ def test_guided_mode_asks_key_then_observes(monkeypatch: pytest.MonkeyPatch) -> 
         return 0
 
     monkeypatch.setattr(cli, "cmd_observar", fake_observar)
+    monkeypatch.setattr(cli, "cmd_atalho", lambda a: steps.append("atalho") or 0)
+    monkeypatch.setattr(cli.sys, "platform", "win32")
+    answers = iter(["s"])
+    monkeypatch.setattr("builtins.input", lambda prompt="": next(answers))
     assert cli.cmd_iniciar() == 0
-    assert steps[0] == "chave" and steps[-1] == "observar:ctrl+shift+a:True"
+    assert steps == ["chave", "atalho", "status", "observar:ctrl+shift+a:True"]
+    # Na segunda vez não pergunta de novo sobre o atalho.
+    steps.clear()
+    assert cli.cmd_iniciar() == 0
+    assert steps == ["chave", "status", "observar:ctrl+shift+a:True"]
 
 
 def test_unexpected_error_keeps_window_open(monkeypatch: pytest.MonkeyPatch) -> None:
