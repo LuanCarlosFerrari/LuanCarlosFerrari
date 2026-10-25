@@ -1,0 +1,60 @@
+name: Assistente Arena — executável Windows
+
+on:
+  push:
+    branches: [claude/sharp-maxwell-bvplvm]
+    paths:
+      - "assistente-arena/**"
+      - ".github/workflows/assistente-arena-exe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  exe:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: assistente-arena
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Dependências
+        run: uv sync
+
+      - name: Lint, tipos e testes
+        run: |
+          uv run ruff check src tests
+          uv run mypy
+          uv run pytest -q
+
+      - name: Gerar AssistenteArena.exe
+        run: >
+          uv run --with pyinstaller pyinstaller --noconfirm --onefile --console
+          --name AssistenteArena
+          --icon "$PWD/src/assistente_arena/assets/icone.ico"
+          --add-data "$PWD/src/assistente_arena/assets;assistente_arena/assets"
+          --collect-submodules keyring
+          --paths "$PWD/src"
+          tools/entrada_exe.py
+
+      - name: Testar o executável
+        run: |
+          .\dist\AssistenteArena.exe --help
+          .\dist\AssistenteArena.exe status
+
+      - name: Publicar para download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: assistente-arena-v0.1.${{ github.run_number }}
+          name: Assistente Arena 0.1.${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          make_latest: true
+          files: assistente-arena/dist/AssistenteArena.exe
+          body: |
+            Baixe o **AssistenteArena.exe** e dê dois cliques.
+            Na primeira vez ele pede a chave da API e oferece criar o atalho na área de trabalho.
+            Se o Windows mostrar "O Windows protegeu o computador", clique em **Mais informações → Executar assim mesmo** (o programa não é assinado digitalmente).

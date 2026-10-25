@@ -8,6 +8,15 @@ Companheiro para o **Magic: The Gathering Arena** no Windows. Ele **só lê e mo
 
 ---
 
+## Jeito mais fácil: baixar o executável
+
+1. Baixe o **[AssistenteArena.exe](https://github.com/LuanCarlosFerrari/LuanCarlosFerrari/releases/latest/download/AssistenteArena.exe)** e guarde numa pasta fixa (por exemplo, `Documentos\AssistenteArena`).
+2. Dê dois cliques. Se o Windows mostrar *"O Windows protegeu o computador"*, clique em **Mais informações → Executar assim mesmo**. O aviso aparece porque o programa não tem assinatura digital paga.
+3. Na primeira vez, ele pede a chave da API (seção 3) e pergunta se deve criar o **atalho com ícone na área de trabalho**.
+4. Pronto: a janela mostra o status e fica escutando **Ctrl+Shift+A**.
+
+Não precisa de Git, Python nem uv. Para atualizar, baixe o `.exe` de novo pelo mesmo link. As seções abaixo são para quem quer rodar pelo código-fonte.
+
 ## 1. Instalação (Windows)
 
 1. Instale o **uv**, o gerenciador de Python que equivale ao `npm` + `nvm`. Abra o PowerShell e rode:
