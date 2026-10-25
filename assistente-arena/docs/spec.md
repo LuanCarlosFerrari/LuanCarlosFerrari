@@ -21,7 +21,7 @@ O programa **nunca**:
 2. lê ou altera a memória do processo do Arena, injeta DLLs, intercepta tráfego de rede ou modifica arquivos do jogo;
 3. decide jogadas no seu lugar.
 
-Ele só **lê**: o arquivo `Player.log` e, se você aprovar (ver §5.3), o banco de cartas que o Arena já deixa salvo no disco. Ambos são abertos em modo somente leitura.
+Ele só **lê**: o arquivo `Player.log`, o banco de cartas que o Arena já deixa salvo no disco (se você aprovar, ver §5.3) e, quando você pede, **uma imagem da janela do Arena fora das partidas** (§9.5). Os arquivos são abertos em modo somente leitura; a captura de tela só copia pixels, como um programa de gravação faz, sem tocar no processo do jogo.
 
 Para reforçar essas regras no código:
 
@@ -36,6 +36,7 @@ Para reforçar essas regras no código:
 | Stack | Python + Qt (PySide6), como você escolheu. Detalhes e trade-offs em §4. |
 | Sua experiência | Você vem de JS/TS. O código usa Python tipado (type hints em tudo, `mypy` estrito), o que deixa a leitura parecida com TypeScript. O README traz um "Python para quem vem do TS". |
 | Claude durante a partida | **Não haverá dicas ao vivo.** O Claude atua só fora da partida: no montador de decks, nas perguntas sobre cartas e no resumo pós-partida. O overlay não terá painel do Claude. Veja §9.4. |
+| Análise de tela | **Sim, sob demanda e só fora da partida.** Um botão ou atalho captura a janela do Arena no construtor de decks ou na coleção e manda a imagem ao Claude. Fica bloqueado automaticamente durante qualquer partida. Veja §9.5. |
 
 ## 4. Tecnologia
 
@@ -127,6 +128,7 @@ Como o log não traz mais a coleção completa, e lê-la da memória do jogo est
 - **A. Automática pelo log:** toda carta que está num deck seu é uma carta que você tem (na quantidade usada). Somam-se as cartas ganhas que aparecerem nas atualizações de inventário durante a sessão.
 - **B. Importação manual:** colar uma lista em texto (formato do Arena ou `4 Nome`) ou importar um CSV. Uma forma prática de exportar tudo é criar no Arena um deck temporário com todas as cartas de um filtro (por exemplo, tipo "Lobo") e exportar.
 - **C. Edição manual:** marcar na tela "tenho 2 cópias" de uma carta.
+- **D. Leitura da tela (Fase 3B):** você abre as páginas da coleção no Arena e aciona "Analisar tela". O Claude reconhece as cartas e as quantidades, o programa confere cada nome no Scryfall e você confirma antes de salvar (§9.5).
 
 A tela de coleção mostra de onde veio cada informação, e o montador avisa: *"a coleção pode estar incompleta"*.
 
@@ -176,7 +178,8 @@ Cada fase começa com um **mock HTML estático** para você aprovar (o que valer
 - **Leveza:** o overlay só é redesenhado quando chega um evento novo, sem laço de animação. Meta: < 1% de CPU e < 150 MB de RAM no programa inteiro durante a partida.
 
 ### Fase 3B — Claude integrado (fora da partida)
-Detalhada em §9.
+Detalhada em §9: montador e perguntas sobre cartas, resumo pós-partida e **análise de tela** do construtor de decks e da coleção (§9.5).
+- **Como testar:** com o Arena aberto no construtor de decks, aperte o atalho "Analisar tela" e confira a lista reconhecida e o guia do deck. Depois, entre numa partida e verifique que o botão fica desativado.
 
 ### Fase 4 — Extras
 - **Histórico de partidas** (SQLite): data, deck, formato, adversário (nome e cores e arquétipo inferidos das cartas vistas), resultado por jogo e por partida, quem começou, mulligans. Taxas de vitória por deck, por cores do adversário e por "na mão / no empate".
@@ -202,6 +205,7 @@ assistente-arena/
 │   ├── collection/            # coleção conhecida, decks, análise de mana
 │   ├── builder/               # montador de decks, import/export
 │   ├── claude/                # cliente, montagem de contexto, custos
+│   ├── screen/                # captura da janela do Arena (bloqueada durante partidas)
 │   ├── storage/               # SQLite, migrações
 │   ├── config/                # configurações locais e chave da API
 │   ├── ui/
@@ -257,13 +261,15 @@ Estilo industrial e minimalista. Ponto de partida da paleta (ajustável nos mock
 ### 9.1 Usos
 1. **Montador de decks:** sugerir cortes e trocas (sempre preferindo cartas que você tem), explicar sinergias e responder perguntas sobre cartas e regras.
 2. **Resumo pós-partida:** ao fim de cada partida, se você ativar, ou com um botão. Mostra o que funcionou, o que deu errado (inundação de mana, falta de mana, cartas que ficaram presas na mão) e sugestões de ajuste no deck.
-3. **Nada durante a partida** (decisão sua, ver §9.4).
+3. **Análise de tela** no construtor de decks e na coleção (§9.5): guia de como jogar o deck, sugestões de troca e reconhecimento da coleção.
+4. **Nada durante a partida** (decisão sua, ver §9.4).
 
 ### 9.2 Contexto enviado (mínimo necessário)
 - Deck atual: lista compacta (`4x Nome EN`) e formato.
 - Coleção: **só** as cartas relevantes à pergunta (da tribo e das cores do deck), não a coleção inteira.
 - Pós-partida: um resumo do jogo gerado localmente (turno a turno: terrenos baixados, mágicas jogadas por cada lado, vida, resultado), não o log bruto.
 - Texto das cartas: só das cartas citadas, obtido do cache do Scryfall.
+- Análise de tela: só a imagem da janela do Arena (nunca a tela inteira), reduzida para no máximo 1568 px no lado maior, mais o contexto de texto acima.
 - Nenhum dado de identidade (nome do adversário, `userId`) é enviado.
 
 ### 9.3 Modelo, custo e limites
@@ -271,6 +277,7 @@ Estilo industrial e minimalista. Ponto de partida da paleta (ajustável nos mock
 - Preços de referência da API (em dólar por milhão de tokens, convertidos para reais na tela): Opus 5.5 entrada 4 / saída 20 / leitura de cache 0,20; Sonnet 5.5 entrada 2 / saída 10; Haiku 5.5 entrada 0,10 / saída 0,50.
 - **Tudo é mostrado em R$.** A cotação vem da API pública do Banco Central (PTAX), atualizada uma vez por dia, com um valor manual de reserva.
   - Exemplo: um resumo pós-partida com cerca de 6 mil tokens de entrada e 800 de saída no Opus 5.5 custa cerca de US$ 0,04, ou **≈ R$ 0,22** com o dólar a R$ 5,50.
+  - Exemplo: uma análise de tela (imagem de ~1568×882 ≈ 1.850 tokens + ~1.500 de contexto, ~1.200 de resposta) custa cerca de US$ 0,04, ou **≈ R$ 0,20**.
   - Antes de cada chamada, o programa mostra uma estimativa ("≈ R$ 0,20"). Depois, mostra o custo real, calculado com o `usage` devolvido pela API.
 - **Cache:**
   - *prompt caching* da API: instruções fixas + deck + coleção relevante formam um prefixo estável, então perguntas seguidas sobre o mesmo deck pagam bem menos;
@@ -287,9 +294,22 @@ Estilo industrial e minimalista. Ponto de partida da paleta (ajustável nos mock
 - Já uma IA sugerindo jogadas ou lendo o que o adversário "pode ter na mão" em tempo real é uma zona cinzenta, mais próxima de "assistência externa". Por isso a sua decisão de **manter o Claude só fora da partida** é a mais segura. O overlay mostra apenas contagens e probabilidades calculadas do seu próprio grimório e as cartas que o adversário já mostrou, como os rastreadores conhecidos.
 - Se a Wizards publicar uma regra clara permitindo, a função pode ser reavaliada numa versão futura, sempre desligada por padrão no ranqueado.
 
+### 9.5 Análise de tela (fora da partida)
+- **Quando:** só quando você pede, por um botão na janela principal ou pelo atalho `Ctrl+Shift+A`. Não existe captura contínua nem automática.
+- **Bloqueio na partida:** o leitor do log sabe quando uma partida começa e termina (`MatchStarted` / `MatchEnded`). Nesse intervalo a captura fica **desativada no código**, e não só escondida na interface, e o atalho mostra "indisponível durante a partida". Se o log não estiver legível, por exemplo sem o Registro Detalhado, a captura também fica bloqueada, por segurança.
+- **O que é capturado:** só a janela do `MTGA.exe`, pela API de captura do Windows (Windows Graphics Capture, com `mss` como alternativa). Funciona em janela e em janela sem bordas.
+- **Usos:**
+  1. *Construtor de decks:* o Claude identifica o deck em edição, mesmo antes de ser salvo, e devolve:
+     - um **guia de como jogar o deck**: plano de jogo, mulligan, cartas para segurar, combinações e ameaças típicas do formato;
+     - sugestões de troca, priorizando cartas da sua coleção.
+  2. *Coleção:* reconhece cartas e quantidades das páginas visíveis e propõe acrescentá-las à coleção conhecida (§5.4, camada D).
+- **Precisão:** a resposta do Claude vem em formato estruturado (lista de `{nome, quantidade}`). Cada nome é conferido no cache do Scryfall (em português e em inglês) e, quando possível, com o deck salvo no log. O que não bater aparece destacado para você corrigir, e nada entra na coleção sem a sua confirmação.
+- **Privacidade:** a imagem fica só na memória e é descartada depois da análise (ver pergunta 9 em §12). Nada é salvo no repositório.
+
 ## 10. Testes e qualidade
 - `pytest` cobre: framing, cada handler (com fixtures reais anonimizadas), recriação do arquivo, estado da partida (contagem do grimório em cenários com embaralhar, vidência e exílio), probabilidades, análise de mana, montador e import/export.
 - Teste de "regras invioláveis": falha se aparecer dependência ou chamada de automação de entrada ou de leitura de memória.
+- Teste do bloqueio da análise de tela: com uma partida em andamento no log reproduzido, a captura tem de ser recusada.
 - CI no GitHub Actions (Windows e Linux): `ruff`, `mypy --strict`, `pytest`.
 - Testes manuais no Windows ao fim de cada fase, com roteiro no README. O desenvolvimento acontece em Linux, então a parte específica do Windows (overlay, hotkeys, `CreateFileW`) **depende do seu teste**.
 
@@ -299,7 +319,7 @@ Estilo industrial e minimalista. Ponto de partida da paleta (ajustável nos mock
 - `docs/mocks/*.html`: um por tela, aprovado antes da implementação.
 
 ## 12. Perguntas em aberto (preciso das suas respostas)
-1. **Coleção (§5.4):** você aceita a "coleção conhecida" (decks + importação + edição manual)? Prefere outro caminho?
+1. **Coleção (§5.4):** você aceita a "coleção conhecida" (decks + importação + edição manual + leitura da tela)? Prefere outro caminho?
 2. **Amostra do log:** você pode me mandar um `Player.log` real, depois de jogar 1 ou 2 partidas com o Registro Detalhado ligado? Eu anonimizo antes de usar nos testes. Sem ele, os handlers ficam baseados em documentação de terceiros e podem errar nomes de campos.
 3. **Banco de cartas do Arena no disco (§5.3, item 3):** posso ler esse arquivo, que é só leitura, como o log?
 4. **Formatos:** além do Histórico, quais você quer no montador? Partidas melhor de 1, melhor de 3 ou ambas?
@@ -307,6 +327,7 @@ Estilo industrial e minimalista. Ponto de partida da paleta (ajustável nos mock
 6. **Modelo padrão do Claude:** mantenho o Opus 5.5 ou prefere começar com um mais barato?
 7. **Orçamento mensal padrão:** R$ 20 está bom?
 8. **Atalhos e posição do overlay:** os padrões de §6 (Fase 3) servem? Lado direito da tela por padrão?
+9. **Imagens capturadas:** apago cada imagem logo depois da análise (padrão proposto) ou guardo as últimas para você rever?
 
 ---
 
