@@ -136,6 +136,9 @@ A tela de coleção mostra de onde veio cada informação, e o montador avisa: *
 
 Cada fase começa com um **mock HTML estático** para você aprovar (o que valer para a fase) e termina com um roteiro "como testar".
 
+### Protótipo antecipado — análise de tela (linha de comando)
+A seu pedido, antecipei um teste da ideia de §9.5, sem interface gráfica: o leitor do log com o bloqueio durante partidas, a captura da janela do Arena, o Claude, a conferência no Scryfall e os custos em R$. Comandos `observar` / `analisar` / `status`; o roteiro de teste está no README. Ele vira a base das Fases 0 e 3B.
+
 ### Fase 0 — Fundação (sem interface)
 - Esqueleto do projeto, `pyproject.toml`, CI com lint, tipos e testes.
 - Leitor do log completo (§5.2) com testes, mais o comando `arena-log replay`.

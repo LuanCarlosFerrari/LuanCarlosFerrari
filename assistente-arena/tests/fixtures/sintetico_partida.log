@@ -1,0 +1,30 @@
+Mono path[0] = 'C:/Program Files/Wizards of the Coast/MTGA/MTGA_Data/Managed'
+Initialize engine version: 2022.3.42f1
+[UnityCrossThreadLogger]DETAILED LOGS: ENABLED
+[UnityCrossThreadLogger]10/25/2026 2:00:01 PM
+==> StartHook {"id":"aa11","request":"{\"PlatformKey\":\"Windows\"}"}
+<== StartHook(aa11)
+{"InventoryInfo":{"Gems":1200,"Gold":4550,"WildCardCommons":31,"WildCardUnCommons":22,"WildCardRares":7,"WildCardMythics":2},"DeckSummariesV2":[{"DeckId":"d1","Name":"Lobos {Tovolar}","Attributes":[{"name":"Format","value":"Historic"}]}]}
+[UnityCrossThreadLogger]10/25/2026 2:05:10 PM: Match to 9F3A: MatchGameRoomStateChangedEvent
+{
+  "transactionId": "t-1",
+  "matchGameRoomStateChangedEvent": {
+    "gameRoomInfo": {
+      "gameRoomConfig": {
+        "eventId": "Historic_Ladder",
+        "matchId": "9F3A",
+        "reservedPlayers": [
+          {"systemSeatId": 1, "playerName": "Jogador#11111"},
+          {"systemSeatId": 2, "playerName": "Oponente}{#22222"}
+        ]
+      },
+      "stateType": "MatchGameRoomStateType_Playing"
+    }
+  }
+}
+[UnityCrossThreadLogger]10/25/2026 2:05:12 PM: Match to 9F3A: GreToClientEvent
+{"transactionId":"t-2","greToClientEvent":{"greToClientMessages":[{"type":"GREMessageType_GameStateMessage","gameStateMessage":{"turnInfo":{"turnNumber":1}}}]}}
+[UnityCrossThreadLogger]10/25/2026 2:21:40 PM: Match to 9F3A: MatchGameRoomStateChangedEvent
+{"transactionId":"t-3","matchGameRoomStateChangedEvent":{"gameRoomInfo":{"gameRoomConfig":{"eventId":"Historic_Ladder","matchId":"9F3A"},"stateType":"MatchGameRoomStateType_MatchCompleted","finalMatchResult":{"matchId":"9F3A","resultList":[{"scope":"MatchScope_Game","winningTeamId":1},{"scope":"MatchScope_Match","winningTeamId":1}]}}}}
+[UnityCrossThreadLogger]10/25/2026 2:21:41 PM
+Client.SceneChange {"fromSceneName":"MatchScene","toSceneName":"Home"}

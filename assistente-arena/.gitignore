@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# Segredos e dados locais — nunca versionar
+.env
+.env.*
+config.local.json
+*.key
+capturas/
+*.db
