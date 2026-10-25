@@ -190,6 +190,21 @@ def cmd_chave(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_atalho(args: argparse.Namespace) -> int:
+    from assistente_arena.shortcut import manage_shortcut
+
+    try:
+        lines = manage_shortcut(start_menu=not args.so_area_de_trabalho, remove=args.remover)
+    except RuntimeError as e:
+        print(f"✖ {e}")
+        return 2
+    for line in lines:
+        print(line.replace("criado:", "Atalho criado:").replace("removido:", "Atalho removido:"))
+    if not args.remover:
+        print('Dê dois cliques em "Assistente Arena" para abrir; Ctrl+Shift+A analisa a tela.')
+    return 0
+
+
 def cmd_log(args: argparse.Namespace) -> int:
     monitor = LogMonitor(Path(args.arquivo))
     events = monitor.poll() + monitor.poll(final=True)
@@ -232,6 +247,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("chave", help="salva a chave da API no cofre do Windows")
     p.add_argument("--remover", action="store_true")
     p.set_defaults(func=cmd_chave)
+
+    p = sub.add_parser("atalho", help="cria o atalho com ícone na área de trabalho")
+    p.add_argument("--remover", action="store_true", help="apaga os atalhos criados")
+    p.add_argument("--so-area-de-trabalho", action="store_true", help="não cria no Menu Iniciar")
+    p.set_defaults(func=cmd_atalho)
 
     p = sub.add_parser("log", help="reproduz um Player.log e lista os eventos (depuração)")
     p.add_argument("arquivo")

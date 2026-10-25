@@ -45,17 +45,39 @@ A chave fica guardada no **Gerenciador de Credenciais do Windows**, nunca num ar
 
 **Custo:** cada análise de tela custa por volta de **R$ 0,15 a R$ 0,30**. O programa mostra o valor de cada chamada e o total do mês em reais, com a cotação PTAX do Banco Central. O orçamento padrão é **R$ 20 por mês**: ao chegar em 80% o programa avisa, e ao chegar em 100% ele bloqueia.
 
-## 4. Testar a ideia
+## 4. Ícone na área de trabalho
+
+Rode uma vez, dentro da pasta `assistente-arena`:
+
+```powershell
+uv run assistente-arena atalho
+```
+
+Isso cria o atalho **Assistente Arena**, com o ícone do programa, na área de trabalho e no Menu Iniciar. A partir daí:
+
+1. Dê dois cliques no ícone. Abre uma janela de terminal que mostra o status (log, Registro Detalhado, chave e gasto do mês) e fica escutando o atalho.
+2. No Arena, aperte **Ctrl+Shift+A** no construtor de decks. O resultado aparece nessa janela.
+3. Para encerrar, feche a janela ou aperte Ctrl+C nela.
+
+Também dá para fixar na barra de tarefas: clique com o botão direito no atalho do Menu Iniciar e escolha **Fixar na barra de tarefas**.
+
+- Para apagar os atalhos: `uv run assistente-arena atalho --remover`.
+- Para criar só na área de trabalho: `--so-area-de-trabalho`.
+- Se você mudar a pasta do projeto de lugar, rode `atalho` de novo.
+
+## 5. Testar a ideia
 
 Abra o Arena em **janela** ou **janela sem bordas**. Em tela cheia exclusiva, a captura pode sair preta.
 
-### Opção A — atalho (recomendado)
+### Opção A — atalho de teclado (recomendado)
+
+Abra pelo **ícone da área de trabalho** (seção 4) ou rode:
 
 ```powershell
 uv run assistente-arena observar --exportar
 ```
 
-Deixe o terminal aberto, vá para o Arena, abra um deck no **construtor de decks** e aperte **Ctrl+Shift+A**. O resultado aparece no terminal:
+Deixe a janela aberta, vá para o Arena, abra um deck no **construtor de decks** e aperte **Ctrl+Shift+A**. O resultado aparece no terminal:
 
 - a lista de cartas reconhecidas, como `4x Tovolar, Soberano Medonho // Tovolar, Flagelo da Meia-noite (Tovolar, Dire Overlord // ...)`;
 - marcações para o que precisa de atenção: `~` nome corrigido pelo Scryfall, `?` leitura incerta, `!` carta não encontrada;
@@ -93,7 +115,7 @@ uv run assistente-arena analisar --imagem C:\caminho\print-do-deck.png
 
 As configurações ficam em `%APPDATA%\AssistenteArena\config.json`: modelo, esforço, orçamento e cotação manual de reserva.
 
-## 5. Comandos
+## 6. Comandos
 
 | Comando | Para quê |
 |---|---|
@@ -101,16 +123,17 @@ As configurações ficam em `%APPDATA%\AssistenteArena\config.json`: modelo, esf
 | `observar` | Fica em segundo plano e analisa ao apertar o atalho. |
 | `analisar` | Faz uma análise agora (tela ou `--imagem`). |
 | `chave` / `chave --remover` | Guarda ou remove a chave da API. |
+| `atalho` / `atalho --remover` | Cria ou apaga o ícone na área de trabalho e no Menu Iniciar. |
 | `log ARQUIVO` | Reproduz um `Player.log` e lista os eventos lidos. Serve para depurar o leitor. |
 
-## 6. Se algo der errado
+## 7. Se algo der errado
 
 - **"Janela do MTG Arena não encontrada"**: o Arena precisa estar aberto e não minimizado.
 - **"Não consegui confirmar pelo log..."**: ative o Registro Detalhado e reinicie o Arena.
 - **Cartas lidas erradas**: imagens maiores ajudam. Use o Arena em tela maior ou dê zoom na lista do deck. O Scryfall corrige erros pequenos automaticamente (marcados com `~`).
 - **Me ajude a melhorar o leitor do log**: rode `uv run assistente-arena log "%USERPROFILE%\AppData\LocalLow\Wizards Of The Coast\MTGA\Player.log"` depois de uma partida e me mande a saída ou o arquivo. Eu removo os dados pessoais antes de usar nos testes.
 
-## 7. Para desenvolver
+## 8. Para desenvolver
 
 ```powershell
 uv run pytest           # testes
